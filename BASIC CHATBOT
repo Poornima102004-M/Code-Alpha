@@ -1,0 +1,61 @@
+import nltk
+from nltk.chat.util import Chat, reflections
+
+# Define pairs of patterns and responses for the chatbot
+pairs = [
+    [
+        r"hi|hello|hey",
+        ["Hello!", "Hi there!", "Hey!"]
+    ],
+    [
+        r"how are you ?",
+        ["I'm doing well, thank you!", "I'm good, thanks for asking.", "Feeling great!"]
+    ],
+    [
+        r"what is your name ?",
+        ["You can call me ChatBot.", "I'm ChatBot.", "I go by the name ChatBot."]
+    ],
+    [
+        r"bye|goodbye",
+        ["Goodbye!", "Bye!", "Take care!"]
+    ],
+    [
+        r"(.*) (location|city) ?",
+        ["I'm not sure, but I can help you with many things!",]
+    ],
+    [
+        r"(.*) created you ?",
+        ["I was created by OpenAI.",]
+    ],
+    [
+        r"(.*) (age|old) ?",
+        ["I don't have an age, I'm just a chatbot.",]
+    ],
+    [
+        r"(.*) (love|like) (you|me) ?",
+        ["I'm just a chatbot, but I appreciate your kind words!",]
+    ],
+    [
+        r"(.*)",
+        ["Sorry, I didn't understand that.", "Could you please rephrase that?"]
+    ]
+]
+
+# Create a Chat object
+chatbot = Chat(pairs, reflections)
+
+def chat_with_bot():
+    print("Hi! I'm a chatbot. You can ask me anything or just say hi.")
+
+    # Start the conversation loop
+    while True:
+        user_input = input("You: ").lower()
+        response = chatbot.respond(user_input)
+        print("ChatBot:", response)
+
+        # Exit the loop if user says goodbye
+        if user_input == "bye":
+            break
+
+if __name__ == "__main__":
+    chat_with_bot()
