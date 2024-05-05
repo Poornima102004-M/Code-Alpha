@@ -1,0 +1,36 @@
+import os
+import shutil
+
+def organize_files(source_dir, dest_dir):
+    # Create destination directory if it doesn't exist
+    if not os.path.exists(dest_dir):
+        os.makedirs(dest_dir)
+
+    # Get list of files in source directory
+    files = os.listdir(source_dir)
+
+    # Organize files into folders based on their extensions
+    for file in files:
+        # Get file extension
+        _, extension = os.path.splitext(file)
+
+        # Skip directories and Python script itself
+        if os.path.isdir(file) or file == os.path.basename(__file__):
+            continue
+
+        # Create directory for the extension if it doesn't exist
+        extension_dir = os.path.join(dest_dir, extension[1:].lower())  # Remove dot from extension
+        if not os.path.exists(extension_dir):
+            os.makedirs(extension_dir)
+
+        # Move file to appropriate directory
+        shutil.move(os.path.join(source_dir, file), os.path.join(extension_dir, file))
+
+    print("Files organized successfully!")
+
+# Example usage
+if __name__ == "__main__":
+    source_directory = "/path/to/source/directory"
+    destination_directory = "/path/to/destination/directory"
+
+    organize_files(source_directory, destination_directory)
