@@ -1,0 +1,67 @@
+import yfinance as yf
+import pandas as pd
+
+class StockPortfolio:
+    def __init__(self):
+        self.portfolio = {}
+
+    def add_stock(self, symbol, shares):
+        if symbol in self.portfolio:
+            print("Stock already exists in the portfolio.")
+            return
+
+        data = yf.Ticker(symbol)
+        if data.info is None:
+            print("Invalid stock symbol.")
+            return
+
+        self.portfolio[symbol] = {"shares": shares}
+
+    def remove_stock(self, symbol):
+        if symbol not in self.portfolio:
+            print("Stock not found in the portfolio.")
+            return
+
+        del self.portfolio[symbol]
+
+    def update_portfolio(self):
+        for symbol, stock in self.portfolio.items():
+            data = yf.Ticker(symbol)
+            stock_info = data.info
+            stock["price"] = stock_info["regularMarketPrice"]
+            stock["change"] = stock_info["regularMarketChange"]
+            stock["percent_change"] = stock_info["regularMarketChangePercent"]
+            stock["market_cap"] = stock_info["marketCap"]
+            stock["day_high"] = stock_info["dayHigh"]
+            stock["day_low"] = stock_info["dayLow"]
+
+    def get_portfolio_summary(self):
+        self.update_portfolio()
+        portfolio_summary = []
+        for symbol, stock in self.portfolio.items():
+            stock_summary = {
+                "Symbol": symbol,
+                "Shares": stock["shares"],
+                "Price": stock["price"],
+                "Change": stock["change"],
+                "Percent Change": stock["percent_change"],
+                "Market Cap": stock["market_cap"],
+                "Day High": stock["day_high"],
+                "Day Low": stock["day_low"]
+            }
+            portfolio_summary.append(stock_summary)
+        return pd.DataFrame(portfolio_summary)
+
+# Example usage
+if __name__ == "__main__":
+    portfolio = StockPortfolio()
+    portfolio.add_stock("AAPL", 10)
+    portfolio.add_stock("GOOGL", 5)
+
+    print("Initial Portfolio:")
+    print(portfolio.get_portfolio_summary())
+
+    portfolio.remove_stock("GOOGL")
+
+    print("\nUpdated Portfolio:")
+    print(portfolio.get_portfolio_summary())
